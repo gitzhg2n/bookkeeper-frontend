@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import api from '../api';
-import { useAuth } from '../context/AuthContext';
+import api from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 import { Box, TextField, Button, Typography, Alert } from '@mui/material';
 
 function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   function handleChange(e) {
@@ -17,9 +15,10 @@ function Login() {
   function handleSubmit(e) {
     e.preventDefault();
     setError('');
-    api.post('/auth/login', form)
+    api
+      .post('/auth/login', form)
       .then(res => {
-        login(res.data.token, res.data.user);
+        localStorage.setItem('authToken', res.data.token);
         navigate('/');
       })
       .catch(e => setError(e.response?.data?.message || 'Login failed.'));
@@ -27,8 +26,14 @@ function Login() {
 
   return (
     <Box maxWidth={400} mx="auto" my={5} p={3} borderRadius={2} boxShadow={2} bgcolor="#fff">
-      <Typography variant="h5" mb={2}>Login</Typography>
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+      <Typography variant="h5" mb={2}>
+        Login
+      </Typography>
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
       <form onSubmit={handleSubmit}>
         <TextField
           name="email"

@@ -1,7 +1,19 @@
 import React, { useEffect } from 'react';
 import { useFetch } from '../hooks/useFetch';
 import { useStore } from '../store';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Alert } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+  Alert,
+} from '@mui/material';
 
 function Transactions() {
   const { data: transactions, loading, error } = useFetch('/transactions', { initialData: [] });
@@ -11,12 +23,19 @@ function Transactions() {
     if (transactions) setTransactions(transactions);
   }, [transactions, setTransactions]);
 
-  if (loading) return <Box textAlign="center"><CircularProgress /></Box>;
+  if (loading)
+    return (
+      <Box textAlign="center">
+        <CircularProgress />
+      </Box>
+    );
   if (error) return <Alert severity="error">{error}</Alert>;
 
   return (
     <Box my={4}>
-      <Typography variant="h5" mb={2}>Transactions</Typography>
+      <Typography variant="h5" mb={2}>
+        Transactions
+      </Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
