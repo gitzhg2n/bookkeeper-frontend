@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import api from '../api';
+import api from '../utils/api';
 import { Box, Typography, TextField, Button, Alert } from '@mui/material';
 
 function BreakupWizard() {
@@ -19,19 +19,30 @@ function BreakupWizard() {
   function handleSubmit(e) {
     e.preventDefault();
     setError('');
-    api.post('/household/breakup', form)
+    api
+      .post('/household/breakup', form)
       .then(() => setMessage('Breakup process initiated!'))
       .catch(() => setError('Failed to initiate breakup.'));
   }
 
   if (message) {
-    return <Box maxWidth={350} mx="auto" my={5}><Alert severity="success">{message}</Alert></Box>;
+    return (
+      <Box maxWidth={350} mx="auto" my={5}>
+        <Alert severity="success">{message}</Alert>
+      </Box>
+    );
   }
 
   return (
     <Box maxWidth={400} mx="auto" my={5} p={3} borderRadius={2} boxShadow={2} bgcolor="#fff">
-      <Typography variant="h5" mb={2}>Breakup Wizard</Typography>
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+      <Typography variant="h5" mb={2}>
+        Breakup Wizard
+      </Typography>
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
       <form onSubmit={handleSubmit}>
         {step === 0 && (
           <>
@@ -44,7 +55,9 @@ function BreakupWizard() {
               fullWidth
               margin="normal"
             />
-            <Button type="button" variant="outlined" onClick={handleNext}>Next</Button>
+            <Button type="button" variant="outlined" onClick={handleNext}>
+              Next
+            </Button>
           </>
         )}
         {step === 1 && (
@@ -58,7 +71,9 @@ function BreakupWizard() {
               fullWidth
               margin="normal"
             />
-            <Button type="button" variant="outlined" onClick={handleNext}>Next</Button>
+            <Button type="button" variant="outlined" onClick={handleNext}>
+              Next
+            </Button>
           </>
         )}
         {step === 2 && (
@@ -73,7 +88,9 @@ function BreakupWizard() {
               fullWidth
               margin="normal"
             />
-            <Button type="submit" variant="contained" color="error" sx={{ mt: 2 }}>Finish</Button>
+            <Button type="submit" variant="contained" color="error" sx={{ mt: 2 }}>
+              Finish
+            </Button>
           </>
         )}
       </form>

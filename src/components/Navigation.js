@@ -26,7 +26,7 @@ function Navigation() {
             key={item.path}
             component={Link}
             to={item.path}
-            color={pathname === item.path ? "secondary" : "inherit"}
+            color={pathname === item.path ? 'secondary' : 'inherit'}
             sx={{ fontWeight: pathname === item.path ? 'bold' : 'normal', mx: 1 }}
           >
             {item.label}

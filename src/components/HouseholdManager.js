@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import api from '../api';
-import { Box, Typography, TextField, Button, List, ListItem, ListItemText, Alert } from '@mui/material';
+import api from '../utils/api';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  Alert,
+} from '@mui/material';
 
 function HouseholdManager() {
   const [members, setMembers] = useState([]);
@@ -9,7 +18,8 @@ function HouseholdManager() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api.get('/household/members')
+    api
+      .get('/household/members')
       .then(res => setMembers(res.data))
       .catch(() => setMembers([]));
   }, []);
@@ -17,7 +27,8 @@ function HouseholdManager() {
   function handleAdd(e) {
     e.preventDefault();
     setError('');
-    api.post('/household/members', { name: newMember })
+    api
+      .post('/household/members', { name: newMember })
       .then(res => {
         setMembers([...members, res.data]);
         setMessage('Member added!');
@@ -28,7 +39,9 @@ function HouseholdManager() {
 
   return (
     <Box maxWidth={400} mx="auto" my={5} p={3} borderRadius={2} boxShadow={2} bgcolor="#fff">
-      <Typography variant="h5" mb={2}>Household Manager</Typography>
+      <Typography variant="h5" mb={2}>
+        Household Manager
+      </Typography>
       <form onSubmit={handleAdd}>
         <TextField
           name="newMember"
@@ -39,10 +52,20 @@ function HouseholdManager() {
           fullWidth
           margin="normal"
         />
-        <Button type="submit" variant="contained" sx={{ mt: 1 }}>Add</Button>
+        <Button type="submit" variant="contained" sx={{ mt: 1 }}>
+          Add
+        </Button>
       </form>
-      {message && <Alert severity="success" sx={{ my: 1 }}>{message}</Alert>}
-      {error && <Alert severity="error" sx={{ my: 1 }}>{error}</Alert>}
+      {message && (
+        <Alert severity="success" sx={{ my: 1 }}>
+          {message}
+        </Alert>
+      )}
+      {error && (
+        <Alert severity="error" sx={{ my: 1 }}>
+          {error}
+        </Alert>
+      )}
       <List sx={{ mt: 2 }}>
         {members.map(m => (
           <ListItem key={m._id || m.id}>

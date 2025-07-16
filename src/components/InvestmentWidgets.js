@@ -3,7 +3,13 @@ import { Box, Paper, Typography, Grid } from '@mui/material';
 
 function InvestmentWidgets({ investments }) {
   if (!investments || investments.length === 0)
-    return <Box my={2}><Paper elevation={1}><Typography p={2}>No investments found.</Typography></Paper></Box>;
+    return (
+      <Box my={2}>
+        <Paper elevation={1}>
+          <Typography p={2}>No investments found.</Typography>
+        </Paper>
+      </Box>
+    );
 
   return (
     <Grid container spacing={2} my={2}>
@@ -13,10 +19,8 @@ function InvestmentWidgets({ investments }) {
             <Typography variant="subtitle1">{inv.name}</Typography>
             <Typography>Value: ${inv.value.toLocaleString()}</Typography>
             <Typography>
-              Change:{" "}
-              <span style={{ color: inv.change >= 0 ? 'green' : 'red' }}>
-                {inv.change}%
-              </span>
+              Change:{' '}
+              <span style={{ color: inv.change >= 0 ? 'green' : 'red' }}>{inv.change}%</span>
             </Typography>
           </Paper>
         </Grid>
