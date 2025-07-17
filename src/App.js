@@ -13,6 +13,7 @@ import Upgrade from './pages/Upgrade';
 import Login from './pages/Login';
 import BreakupWizard from './components/BreakupWizard';
 import HouseholdManager from './components/HouseholdManager';
+import IncomeSources from './pages/IncomeSources';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/breakup" element={<BreakupWizard />} />
           <Route path="/household" element={<HouseholdManager />} />
+          <Route path="/income-sources" element={<IncomeSources />} />
         </Routes>
       </Container>
     </Box>
