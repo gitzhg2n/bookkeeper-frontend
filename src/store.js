@@ -11,5 +11,7 @@ export const useStore = create(set => ({
   setHouseholdMembers: members => set({ householdMembers: members }),
   investments: [],
   setInvestments: investments => set({ investments }),
+  incomeSources: [], // <-- Add this line
+  setIncomeSources: sources => set({ incomeSources: sources }), // <-- And this line
   // Add more global state as needed
 }));
