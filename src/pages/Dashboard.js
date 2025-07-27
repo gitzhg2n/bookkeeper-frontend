@@ -15,16 +15,17 @@ function Dashboard() {
 
   const loading = chartLoading || investLoading;
 
-  if (loading)
+  if (loading) {
     return (
-      <Box textAlign="center">
+      <Box textAlign='center'>
         <CircularProgress />
       </Box>
     );
+  }
 
   return (
     <Box my={4}>
-      <Typography variant="h4" mb={2}>
+      <Typography variant='h4' mb={2}>
         Dashboard
       </Typography>
       <NetWorthWidget />

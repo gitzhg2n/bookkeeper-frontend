@@ -34,14 +34,20 @@ function Goals() {
   const [deleteError, setDeleteError] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const { data: goals, loading, error } = useFetch('/goals', {
+  const {
+    data: goals,
+    loading,
+    error,
+  } = useFetch('/goals', {
     initialData: [],
     dependencies: [refreshTrigger],
   });
   const setGoals = useStore(state => state.setGoals);
 
   useEffect(() => {
-    if (goals) setGoals(goals);
+    if (goals) {
+      setGoals(goals);
+    }
   }, [goals, setGoals]);
 
   function handleAddClick() {
@@ -79,18 +85,29 @@ function Goals() {
     }
   }
 
-  if (loading)
+  if (loading) {
     return (
-      <Box textAlign="center">
+      <Box textAlign='center'>
         <CircularProgress />
       </Box>
     );
-  if (error) return <Alert severity="error">{error}</Alert>;
+  }
+  if (error) {
+    return <Alert severity='error'>{error}</Alert>;
+  }
 
   return (
-    <Box maxWidth={600} mx="auto" my={4} p={3} borderRadius={2} boxShadow={2} bgcolor="#fff">
-      <Typography variant="h5" mb={2}>Goals</Typography>
-      <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAddClick} sx={{ mb: 2 }}>
+    <Box maxWidth={600} mx='auto' my={4} p={3} borderRadius={2} boxShadow={2} bgcolor='#fff'>
+      <Typography variant='h5' mb={2}>
+        Goals
+      </Typography>
+      <Button
+        variant='contained'
+        color='primary'
+        startIcon={<AddIcon />}
+        onClick={handleAddClick}
+        sx={{ mb: 2 }}
+      >
         Add Goal
       </Button>
       <List>
@@ -98,11 +115,15 @@ function Goals() {
           <ListItem
             key={goal.id}
             secondaryAction={
-              <Stack direction="row" spacing={1}>
-                <IconButton edge="end" aria-label="edit" onClick={() => handleEditClick(goal)}>
+              <Stack direction='row' spacing={1}>
+                <IconButton edge='end' aria-label='edit' onClick={() => handleEditClick(goal)}>
                   <EditIcon />
                 </IconButton>
-                <IconButton edge="end" aria-label="delete" onClick={() => handleOpenDelete(goal.id)}>
+                <IconButton
+                  edge='end'
+                  aria-label='delete'
+                  onClick={() => handleOpenDelete(goal.id)}
+                >
                   <DeleteIcon />
                 </IconButton>
               </Stack>
@@ -115,7 +136,7 @@ function Goals() {
                   Target: ${goal.target.toLocaleString()} &mdash; Progress: $
                   {goal.progress.toLocaleString()} ({goal.category})
                   <LinearProgress
-                    variant="determinate"
+                    variant='determinate'
                     value={Math.min(100, (goal.progress / goal.target) * 100)}
                     sx={{ mt: 1, height: 8, borderRadius: 4 }}
                   />
@@ -137,11 +158,22 @@ function Goals() {
           <DialogContentText>
             Are you sure you want to delete this goal? This action cannot be undone.
           </DialogContentText>
-          {deleteError && <Alert severity="error" sx={{ mt: 2 }}>{deleteError}</Alert>}
+          {deleteError && (
+            <Alert severity='error' sx={{ mt: 2 }}>
+              {deleteError}
+            </Alert>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDelete} disabled={deleteLoading}>Cancel</Button>
-          <Button color="error" variant="contained" onClick={handleConfirmDelete} disabled={deleteLoading}>
+          <Button onClick={handleCloseDelete} disabled={deleteLoading}>
+            Cancel
+          </Button>
+          <Button
+            color='error'
+            variant='contained'
+            onClick={handleConfirmDelete}
+            disabled={deleteLoading}
+          >
             Delete
           </Button>
         </DialogActions>

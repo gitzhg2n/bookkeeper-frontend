@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions,
-  TextField, Button, Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  Alert,
 } from '@mui/material';
 import api from '../utils/api';
 
@@ -35,17 +40,27 @@ function BudgetForm({ open, budget = null, onClose, onSuccess }) {
 
   function validate() {
     const errs = {};
-    if (!form.name.trim()) errs.name = 'Name required';
-    if (!form.category.trim()) errs.category = 'Category required';
-    if (!form.amount.trim() || isNaN(parseInt(form.amount))) errs.amount = 'Amount required';
-    if (!form.period) errs.period = 'Period required';
+    if (!form.name.trim()) {
+      errs.name = 'Name required';
+    }
+    if (!form.category.trim()) {
+      errs.category = 'Category required';
+    }
+    if (!form.amount.trim() || isNaN(parseInt(form.amount))) {
+      errs.amount = 'Amount required';
+    }
+    if (!form.period) {
+      errs.period = 'Period required';
+    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate()) {
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -65,17 +80,17 @@ function BudgetForm({ open, budget = null, onClose, onSuccess }) {
   }
 
   return (
-    <Dialog open={open} onClose={loading ? undefined : onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={loading ? undefined : onClose} maxWidth='sm' fullWidth>
       <DialogTitle>{budget ? 'Edit Budget' : 'Add New Budget'}</DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
           <TextField
-            name="name"
-            label="Budget Name"
+            name='name'
+            label='Budget Name'
             value={form.name}
             onChange={e => setForm({ ...form, name: e.target.value })}
             fullWidth
-            margin="normal"
+            margin='normal'
             error={!!errors.name}
             helperText={errors.name}
             disabled={loading}
@@ -83,50 +98,58 @@ function BudgetForm({ open, budget = null, onClose, onSuccess }) {
             required
           />
           <TextField
-            name="category"
-            label="Category"
+            name='category'
+            label='Category'
             value={form.category}
             onChange={e => setForm({ ...form, category: e.target.value })}
             fullWidth
-            margin="normal"
+            margin='normal'
             error={!!errors.category}
             helperText={errors.category}
             disabled={loading}
             required
           />
           <TextField
-            name="amount"
-            label="Amount"
+            name='amount'
+            label='Amount'
             value={form.amount}
             onChange={e => setForm({ ...form, amount: e.target.value })}
             fullWidth
-            margin="normal"
-            type="number"
+            margin='normal'
+            type='number'
             error={!!errors.amount}
             helperText={errors.amount}
             disabled={loading}
             required
           />
           <TextField
-            name="period"
-            label="Period"
+            name='period'
+            label='Period'
             select
             value={form.period}
             onChange={e => setForm({ ...form, period: e.target.value })}
             fullWidth
-            margin="normal"
+            margin='normal'
             disabled={loading}
             required
           >
             {periods.map(period => (
-              <option key={period} value={period}>{period}</option>
+              <option key={period} value={period}>
+                {period}
+              </option>
             ))}
           </TextField>
-          {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+          {error && (
+            <Alert severity='error' sx={{ mt: 2 }}>
+              {error}
+            </Alert>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} disabled={loading}>Cancel</Button>
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
+          <Button onClick={onClose} disabled={loading}>
+            Cancel
+          </Button>
+          <Button type='submit' variant='contained' color='primary' disabled={loading}>
             {loading ? 'Saving…' : budget ? 'Save' : 'Create'}
           </Button>
         </DialogActions>

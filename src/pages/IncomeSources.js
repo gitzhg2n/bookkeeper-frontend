@@ -51,7 +51,9 @@ function IncomeSources() {
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
-    if (sources) setIncomeSources(sources);
+    if (sources) {
+      setIncomeSources(sources);
+    }
   }, [sources, setIncomeSources]);
 
   function handleOpenAdd() {
@@ -143,29 +145,29 @@ function IncomeSources() {
   }
 
   return (
-    <Box maxWidth={600} mx="auto" my={4} p={3} borderRadius={2} boxShadow={2} bgcolor="#fff">
-      <Typography variant="h5" mb={2}>
+    <Box maxWidth={600} mx='auto' my={4} p={3} borderRadius={2} boxShadow={2} bgcolor='#fff'>
+      <Typography variant='h5' mb={2}>
         Income Sources
       </Typography>
-      <Button variant="contained" color="primary" onClick={handleOpenAdd} sx={{ mb: 2 }}>
+      <Button variant='contained' color='primary' onClick={handleOpenAdd} sx={{ mb: 2 }}>
         Add Income Source
       </Button>
       {loading && (
-        <Box textAlign="center">
+        <Box textAlign='center'>
           <CircularProgress />
         </Box>
       )}
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && <Alert severity='error'>{error}</Alert>}
       <List>
         {sources.map(src => (
           <ListItem
             key={src.id}
             secondaryAction={
-              <Stack direction="row" spacing={1}>
-                <IconButton edge="end" aria-label="edit" onClick={() => handleOpenEdit(src)}>
+              <Stack direction='row' spacing={1}>
+                <IconButton edge='end' aria-label='edit' onClick={() => handleOpenEdit(src)}>
                   <EditIcon />
                 </IconButton>
-                <IconButton edge="end" aria-label="delete" onClick={() => handleOpenDelete(src.id)}>
+                <IconButton edge='end' aria-label='delete' onClick={() => handleOpenDelete(src.id)}>
                   <DeleteIcon />
                 </IconButton>
               </Stack>
@@ -189,68 +191,76 @@ function IncomeSources() {
         <form onSubmit={handleSubmit}>
           <DialogContent>
             <TextField
-              label="Name"
-              name="name"
+              label='Name'
+              name='name'
               value={form.name}
               onChange={e => setForm({ ...form, name: e.target.value })}
               required
               fullWidth
-              margin="dense"
+              margin='dense'
               autoFocus
             />
             <TextField
               select
-              label="Type"
-              name="type"
+              label='Type'
+              name='type'
               value={form.type}
               onChange={e => setForm({ ...form, type: e.target.value })}
               required
               fullWidth
-              margin="dense"
+              margin='dense'
             >
               {incomeTypes.map(option => (
-                <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
               ))}
             </TextField>
             <TextField
-              label="Amount"
-              name="amount"
-              type="number"
+              label='Amount'
+              name='amount'
+              type='number'
               value={form.amount}
               onChange={e => setForm({ ...form, amount: e.target.value })}
               required
               fullWidth
-              margin="dense"
+              margin='dense'
               inputProps={{ min: 0, step: 0.01 }}
             />
             <TextField
               select
-              label="Frequency"
-              name="frequency"
+              label='Frequency'
+              name='frequency'
               value={form.frequency}
               onChange={e => setForm({ ...form, frequency: e.target.value })}
               required
               fullWidth
-              margin="dense"
+              margin='dense'
             >
-              <MenuItem value="monthly">Monthly</MenuItem>
-              <MenuItem value="annual">Annual</MenuItem>
+              <MenuItem value='monthly'>Monthly</MenuItem>
+              <MenuItem value='annual'>Annual</MenuItem>
             </TextField>
             <TextField
-              label="Notes"
-              name="notes"
+              label='Notes'
+              name='notes'
               value={form.notes}
               onChange={e => setForm({ ...form, notes: e.target.value })}
               fullWidth
-              margin="dense"
+              margin='dense'
               multiline
               rows={2}
             />
-            {submitError && <Alert severity="error" sx={{ mt: 2 }}>{submitError}</Alert>}
+            {submitError && (
+              <Alert severity='error' sx={{ mt: 2 }}>
+                {submitError}
+              </Alert>
+            )}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button type="submit" variant="contained">{editMode ? 'Save' : 'Add'}</Button>
+            <Button type='submit' variant='contained'>
+              {editMode ? 'Save' : 'Add'}
+            </Button>
           </DialogActions>
         </form>
       </Dialog>
@@ -261,11 +271,22 @@ function IncomeSources() {
           <DialogContentText>
             Are you sure you want to delete this income source? This action cannot be undone.
           </DialogContentText>
-          {deleteError && <Alert severity="error" sx={{ mt: 2 }}>{deleteError}</Alert>}
+          {deleteError && (
+            <Alert severity='error' sx={{ mt: 2 }}>
+              {deleteError}
+            </Alert>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDelete} disabled={deleteLoading}>Cancel</Button>
-          <Button color="error" variant="contained" onClick={handleConfirmDelete} disabled={deleteLoading}>
+          <Button onClick={handleCloseDelete} disabled={deleteLoading}>
+            Cancel
+          </Button>
+          <Button
+            color='error'
+            variant='contained'
+            onClick={handleConfirmDelete}
+            disabled={deleteLoading}
+          >
             {deleteLoading ? <CircularProgress size={20} /> : 'Delete'}
           </Button>
         </DialogActions>

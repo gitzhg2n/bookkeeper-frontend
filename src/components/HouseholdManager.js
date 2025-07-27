@@ -38,31 +38,31 @@ function HouseholdManager() {
   }
 
   return (
-    <Box maxWidth={400} mx="auto" my={5} p={3} borderRadius={2} boxShadow={2} bgcolor="#fff">
-      <Typography variant="h5" mb={2}>
+    <Box maxWidth={400} mx='auto' my={5} p={3} borderRadius={2} boxShadow={2} bgcolor='#fff'>
+      <Typography variant='h5' mb={2}>
         Household Manager
       </Typography>
       <form onSubmit={handleAdd}>
         <TextField
-          name="newMember"
-          label="Add household member"
+          name='newMember'
+          label='Add household member'
           value={newMember}
           onChange={e => setNewMember(e.target.value)}
           required
           fullWidth
-          margin="normal"
+          margin='normal'
         />
-        <Button type="submit" variant="contained" sx={{ mt: 1 }}>
+        <Button type='submit' variant='contained' sx={{ mt: 1 }}>
           Add
         </Button>
       </form>
       {message && (
-        <Alert severity="success" sx={{ my: 1 }}>
+        <Alert severity='success' sx={{ my: 1 }}>
           {message}
         </Alert>
       )}
       {error && (
-        <Alert severity="error" sx={{ my: 1 }}>
+        <Alert severity='error' sx={{ my: 1 }}>
           {error}
         </Alert>
       )}

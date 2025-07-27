@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  TextField, 
-  Button, 
-  MenuItem, 
+import {
+  TextField,
+  Button,
+  MenuItem,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -36,7 +36,7 @@ function AccountForm({ open, account = null, onClose, onSuccess }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   const isEdit = Boolean(account?.id);
 
   // Initialize form with account data if editing
@@ -64,21 +64,25 @@ function AccountForm({ open, account = null, onClose, onSuccess }) {
 
   const validate = () => {
     const newErrors = {};
-    if (!form.name.trim()) newErrors.name = 'Name is required';
-    if (!form.institution.trim()) newErrors.institution = 'Institution is required';
-    
+    if (!form.name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+    if (!form.institution.trim()) {
+      newErrors.institution = 'Institution is required';
+    }
+
     // Balance must be a valid number
     if (!form.balance.trim()) {
       newErrors.balance = 'Balance is required';
     } else if (isNaN(parseFloat(form.balance))) {
       newErrors.balance = 'Balance must be a valid number';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
     // Clear error for this field when user types
@@ -87,27 +91,29 @@ function AccountForm({ open, account = null, onClose, onSuccess }) {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
-    if (!validate()) return;
-    
+
+    if (!validate()) {
+      return;
+    }
+
     setLoading(true);
     setError('');
-    
+
     try {
       const payload = {
         ...form,
         balance: parseFloat(form.balance),
       };
-      
+
       let response;
       if (isEdit) {
         response = await api.put(`/accounts/${account.id}`, payload);
       } else {
         response = await api.post('/accounts', payload);
       }
-      
+
       onSuccess(response.data);
       onClose();
     } catch (err) {
@@ -118,35 +124,35 @@ function AccountForm({ open, account = null, onClose, onSuccess }) {
   };
 
   return (
-    <Dialog open={open} onClose={loading ? undefined : onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={loading ? undefined : onClose} maxWidth='sm' fullWidth>
       <DialogTitle>{isEdit ? 'Edit Account' : 'Add New Account'}</DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
           <TextField
-            name="name"
-            label="Account Name"
+            name='name'
+            label='Account Name'
             value={form.name}
             onChange={handleChange}
             fullWidth
-            margin="normal"
+            margin='normal'
             error={Boolean(errors.name)}
             helperText={errors.name}
             disabled={loading}
             autoFocus
             required
           />
-          
-          <FormControl fullWidth margin="normal" error={Boolean(errors.type)}>
+
+          <FormControl fullWidth margin='normal' error={Boolean(errors.type)}>
             <InputLabel>Account Type</InputLabel>
             <Select
-              name="type"
+              name='type'
               value={form.type}
               onChange={handleChange}
-              label="Account Type"
+              label='Account Type'
               disabled={loading}
               required
             >
-              {accountTypes.map((type) => (
+              {accountTypes.map(type => (
                 <MenuItem key={type.value} value={type.value}>
                   {type.label}
                 </MenuItem>
@@ -154,15 +160,15 @@ function AccountForm({ open, account = null, onClose, onSuccess }) {
             </Select>
             {errors.type && <FormHelperText>{errors.type}</FormHelperText>}
           </FormControl>
-          
+
           <TextField
-            name="balance"
-            label="Current Balance"
+            name='balance'
+            label='Current Balance'
             value={form.balance}
             onChange={handleChange}
             fullWidth
-            margin="normal"
-            type="number"
+            margin='normal'
+            type='number'
             InputProps={{
               startAdornment: '$',
               step: '0.01',
@@ -172,32 +178,31 @@ function AccountForm({ open, account = null, onClose, onSuccess }) {
             disabled={loading}
             required
           />
-          
+
           <TextField
-            name="institution"
-            label="Financial Institution"
+            name='institution'
+            label='Financial Institution'
             value={form.institution}
             onChange={handleChange}
             fullWidth
-            margin="normal"
+            margin='normal'
             error={Boolean(errors.institution)}
             helperText={errors.institution}
             disabled={loading}
             required
           />
-          
-          {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+
+          {error && (
+            <Alert severity='error' sx={{ mt: 2 }}>
+              {error}
+            </Alert>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} disabled={loading}>
             Cancel
           </Button>
-          <Button 
-            type="submit" 
-            variant="contained" 
-            color="primary" 
-            disabled={loading}
-          >
+          <Button type='submit' variant='contained' color='primary' disabled={loading}>
             {loading ? <CircularProgress size={24} /> : isEdit ? 'Save' : 'Create'}
           </Button>
         </DialogActions>

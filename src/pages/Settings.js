@@ -16,48 +16,48 @@ function Settings() {
     setError('');
     api
       .put('/users/me', form)
-      .then(res => {
+      .then(_res => {
         setMessage('Profile updated!');
       })
       .catch(e => setError(e.response?.data?.message || 'Update failed.'));
   }
 
   return (
-    <Box maxWidth={400} mx="auto" my={5} p={3} borderRadius={2} boxShadow={2} bgcolor="#fff">
-      <Typography variant="h5" mb={2}>
+    <Box maxWidth={400} mx='auto' my={5} p={3} borderRadius={2} boxShadow={2} bgcolor='#fff'>
+      <Typography variant='h5' mb={2}>
         Settings
       </Typography>
       {message && (
-        <Alert severity="success" sx={{ mb: 1 }}>
+        <Alert severity='success' sx={{ mb: 1 }}>
           {message}
         </Alert>
       )}
       {error && (
-        <Alert severity="error" sx={{ mb: 1 }}>
+        <Alert severity='error' sx={{ mb: 1 }}>
           {error}
         </Alert>
       )}
       <form onSubmit={handleSave}>
         <TextField
-          name="name"
-          label="Name"
+          name='name'
+          label='Name'
           fullWidth
           value={form.name}
           onChange={handleChange}
           required
-          margin="normal"
+          margin='normal'
         />
         <TextField
-          name="email"
-          label="Email"
-          type="email"
+          name='email'
+          label='Email'
+          type='email'
           fullWidth
           value={form.email}
           onChange={handleChange}
           required
-          margin="normal"
+          margin='normal'
         />
-        <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2 }}>
+        <Button type='submit' fullWidth variant='contained' color='primary' sx={{ mt: 2 }}>
           Save
         </Button>
       </form>
