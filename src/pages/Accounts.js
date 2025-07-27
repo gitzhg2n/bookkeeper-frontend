@@ -4,9 +4,6 @@ import { useStore } from '../store';
 import {
   Box,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
   CircularProgress,
   Alert,
   Button,
@@ -16,7 +13,7 @@ import {
   CardContent,
   Paper,
   Tooltip,
-  Stack
+  Stack,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -33,7 +30,7 @@ function Accounts() {
   // Use refreshTrigger to refetch data when accounts are added/edited/deleted
   const { data: accounts, loading, error } = useFetch('/accounts', { 
     initialData: [],
-    dependencies: [refreshTrigger] 
+    dependencies: [refreshTrigger], 
   });
   
   const setAccounts = useStore(state => state.setAccounts);
@@ -80,7 +77,7 @@ function Accounts() {
       }
       return acc;
     },
-    { assets: 0, liabilities: 0 }
+    { assets: 0, liabilities: 0 },
   );
 
   const netWorth = totals.assets - totals.liabilities;
@@ -127,7 +124,7 @@ function Accounts() {
           </Box>
           <Box flex={1}>
             <Typography variant="body2" color="text.secondary">Net Worth</Typography>
-            <Typography variant="h5" color={netWorth >= 0 ? "success" : "error"}>
+            <Typography variant="h5" color={netWorth >= 0 ? 'success' : 'error'}>
               ${netWorth.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </Typography>
           </Box>

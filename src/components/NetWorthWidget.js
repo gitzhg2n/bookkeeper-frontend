@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useFetch } from '../hooks/useFetch';
-import { Box, Typography, Paper } from '@mui/material';
+import { Typography, Paper } from '@mui/material';
 
 function NetWorthWidget() {
   // Fetch accounts and investments

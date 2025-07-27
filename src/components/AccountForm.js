@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Box, 
   TextField, 
   Button, 
   MenuItem, 
@@ -13,7 +12,7 @@ import {
   Select,
   FormHelperText,
   CircularProgress,
-  Alert
+  Alert,
 } from '@mui/material';
 import api from '../utils/api';
 
@@ -24,7 +23,7 @@ const accountTypes = [
   { value: 'loan', label: 'Loan' },
   { value: 'investment', label: 'Investment' },
   { value: 'retirement', label: 'Retirement' },
-  { value: 'other', label: 'Other' }
+  { value: 'other', label: 'Other' },
 ];
 
 function AccountForm({ open, account = null, onClose, onSuccess }) {
@@ -32,7 +31,7 @@ function AccountForm({ open, account = null, onClose, onSuccess }) {
     name: '',
     type: 'checking',
     balance: '',
-    institution: ''
+    institution: '',
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -47,7 +46,7 @@ function AccountForm({ open, account = null, onClose, onSuccess }) {
         name: account.name || '',
         type: account.type || 'checking',
         balance: account.balance !== undefined ? String(account.balance) : '',
-        institution: account.institution || ''
+        institution: account.institution || '',
       });
     } else {
       // Reset form for new account
@@ -55,7 +54,7 @@ function AccountForm({ open, account = null, onClose, onSuccess }) {
         name: '',
         type: 'checking',
         balance: '',
-        institution: ''
+        institution: '',
       });
     }
     // Clear any previous errors
@@ -99,7 +98,7 @@ function AccountForm({ open, account = null, onClose, onSuccess }) {
     try {
       const payload = {
         ...form,
-        balance: parseFloat(form.balance)
+        balance: parseFloat(form.balance),
       };
       
       let response;
@@ -166,7 +165,7 @@ function AccountForm({ open, account = null, onClose, onSuccess }) {
             type="number"
             InputProps={{
               startAdornment: '$',
-              step: '0.01'
+              step: '0.01',
             }}
             error={Boolean(errors.balance)}
             helperText={errors.balance}

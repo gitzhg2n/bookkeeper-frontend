@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
+import { useFetch } from '../hooks/useFetch';
 import DashboardCharts from '../components/DashboardCharts';
 import InvestmentWidgets from '../components/InvestmentWidgets';
 import NetWorthWidget from '../components/NetWorthWidget';
