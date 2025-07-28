@@ -37,14 +37,20 @@ function Transactions() {
   const [deleteError, setDeleteError] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const { data: transactions, loading, error } = useFetch('/transactions', {
+  const {
+    data: transactions,
+    loading,
+    error,
+  } = useFetch('/transactions', {
     initialData: [],
     dependencies: [refreshTrigger],
   });
   const setTransactions = useStore(state => state.setTransactions);
 
   useEffect(() => {
-    if (transactions) setTransactions(transactions);
+    if (transactions) {
+      setTransactions(transactions);
+    }
   }, [transactions, setTransactions]);
 
   function handleAddClick() {
@@ -82,18 +88,29 @@ function Transactions() {
     }
   }
 
-  if (loading)
+  if (loading) {
     return (
-      <Box textAlign="center">
+      <Box textAlign='center'>
         <CircularProgress />
       </Box>
     );
-  if (error) return <Alert severity="error">{error}</Alert>;
+  }
+  if (error) {
+    return <Alert severity='error'>{error}</Alert>;
+  }
 
   return (
     <Box my={4}>
-      <Typography variant="h5" mb={2}>Transactions</Typography>
-      <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAddClick} sx={{ mb: 2 }}>
+      <Typography variant='h5' mb={2}>
+        Transactions
+      </Typography>
+      <Button
+        variant='contained'
+        color='primary'
+        startIcon={<AddIcon />}
+        onClick={handleAddClick}
+        sx={{ mb: 2 }}
+      >
         Add Transaction
       </Button>
       <TableContainer component={Paper}>
@@ -105,7 +122,7 @@ function Transactions() {
               <TableCell>Category</TableCell>
               <TableCell>Amount</TableCell>
               <TableCell>Description</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell align='right'>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -116,13 +133,17 @@ function Transactions() {
                 <TableCell>{tx.category}</TableCell>
                 <TableCell>${tx.amount}</TableCell>
                 <TableCell>{tx.description}</TableCell>
-                <TableCell align="right">
-                  <Stack direction="row" spacing={1}>
-                    <IconButton size="small" aria-label="edit" onClick={() => handleEditClick(tx)}>
-                      <EditIcon fontSize="small" />
+                <TableCell align='right'>
+                  <Stack direction='row' spacing={1}>
+                    <IconButton size='small' aria-label='edit' onClick={() => handleEditClick(tx)}>
+                      <EditIcon fontSize='small' />
                     </IconButton>
-                    <IconButton size="small" aria-label="delete" onClick={() => handleOpenDelete(tx.id)}>
-                      <DeleteIcon fontSize="small" />
+                    <IconButton
+                      size='small'
+                      aria-label='delete'
+                      onClick={() => handleOpenDelete(tx.id)}
+                    >
+                      <DeleteIcon fontSize='small' />
                     </IconButton>
                   </Stack>
                 </TableCell>
@@ -143,11 +164,22 @@ function Transactions() {
           <DialogContentText>
             Are you sure you want to delete this transaction? This action cannot be undone.
           </DialogContentText>
-          {deleteError && <Alert severity="error" sx={{ mt: 2 }}>{deleteError}</Alert>}
+          {deleteError && (
+            <Alert severity='error' sx={{ mt: 2 }}>
+              {deleteError}
+            </Alert>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDelete} disabled={deleteLoading}>Cancel</Button>
-          <Button color="error" variant="contained" onClick={handleConfirmDelete} disabled={deleteLoading}>
+          <Button onClick={handleCloseDelete} disabled={deleteLoading}>
+            Cancel
+          </Button>
+          <Button
+            color='error'
+            variant='contained'
+            onClick={handleConfirmDelete}
+            disabled={deleteLoading}
+          >
             Delete
           </Button>
         </DialogActions>

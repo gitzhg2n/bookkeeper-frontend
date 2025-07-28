@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions,
-  TextField, Button, Alert
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  Alert,
 } from '@mui/material';
 import api from '../utils/api';
 
@@ -35,17 +40,27 @@ function GoalForm({ open, goal = null, onClose, onSuccess }) {
 
   function validate() {
     const errs = {};
-    if (!form.name.trim()) errs.name = 'Name required';
-    if (!form.category.trim()) errs.category = 'Category required';
-    if (!form.target.trim() || isNaN(parseFloat(form.target))) errs.target = 'Target required';
-    if (!form.progress.trim() || isNaN(parseFloat(form.progress))) errs.progress = 'Progress required';
+    if (!form.name.trim()) {
+      errs.name = 'Name required';
+    }
+    if (!form.category.trim()) {
+      errs.category = 'Category required';
+    }
+    if (!form.target.trim() || isNaN(parseFloat(form.target))) {
+      errs.target = 'Target required';
+    }
+    if (!form.progress.trim() || isNaN(parseFloat(form.progress))) {
+      errs.progress = 'Progress required';
+    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate()) {
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -69,17 +84,17 @@ function GoalForm({ open, goal = null, onClose, onSuccess }) {
   }
 
   return (
-    <Dialog open={open} onClose={loading ? undefined : onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={loading ? undefined : onClose} maxWidth='sm' fullWidth>
       <DialogTitle>{goal ? 'Edit Goal' : 'Add New Goal'}</DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
           <TextField
-            name="name"
-            label="Goal Name"
+            name='name'
+            label='Goal Name'
             value={form.name}
             onChange={e => setForm({ ...form, name: e.target.value })}
             fullWidth
-            margin="normal"
+            margin='normal'
             error={!!errors.name}
             helperText={errors.name}
             disabled={loading}
@@ -87,59 +102,65 @@ function GoalForm({ open, goal = null, onClose, onSuccess }) {
             required
           />
           <TextField
-            name="category"
-            label="Category"
+            name='category'
+            label='Category'
             value={form.category}
             onChange={e => setForm({ ...form, category: e.target.value })}
             fullWidth
-            margin="normal"
+            margin='normal'
             error={!!errors.category}
             helperText={errors.category}
             disabled={loading}
             required
           />
           <TextField
-            name="target"
-            label="Target Amount"
+            name='target'
+            label='Target Amount'
             value={form.target}
             onChange={e => setForm({ ...form, target: e.target.value })}
             fullWidth
-            margin="normal"
-            type="number"
+            margin='normal'
+            type='number'
             error={!!errors.target}
             helperText={errors.target}
             disabled={loading}
             required
           />
           <TextField
-            name="progress"
-            label="Current Progress"
+            name='progress'
+            label='Current Progress'
             value={form.progress}
             onChange={e => setForm({ ...form, progress: e.target.value })}
             fullWidth
-            margin="normal"
-            type="number"
+            margin='normal'
+            type='number'
             error={!!errors.progress}
             helperText={errors.progress}
             disabled={loading}
             required
           />
           <TextField
-            name="notes"
-            label="Notes"
+            name='notes'
+            label='Notes'
             value={form.notes}
             onChange={e => setForm({ ...form, notes: e.target.value })}
             fullWidth
-            margin="normal"
+            margin='normal'
             disabled={loading}
             multiline
             rows={2}
           />
-          {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+          {error && (
+            <Alert severity='error' sx={{ mt: 2 }}>
+              {error}
+            </Alert>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} disabled={loading}>Cancel</Button>
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
+          <Button onClick={onClose} disabled={loading}>
+            Cancel
+          </Button>
+          <Button type='submit' variant='contained' color='primary' disabled={loading}>
             {loading ? 'Saving…' : goal ? 'Save' : 'Create'}
           </Button>
         </DialogActions>

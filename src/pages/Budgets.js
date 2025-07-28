@@ -33,14 +33,20 @@ function Budgets() {
   const [deleteError, setDeleteError] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const { data: budgets, loading, error } = useFetch('/budgets', {
+  const {
+    data: budgets,
+    loading,
+    error,
+  } = useFetch('/budgets', {
     initialData: [],
     dependencies: [refreshTrigger],
   });
   const setBudgets = useStore(state => state.setBudgets);
 
   useEffect(() => {
-    if (budgets) setBudgets(budgets);
+    if (budgets) {
+      setBudgets(budgets);
+    }
   }, [budgets, setBudgets]);
 
   function handleAddClick() {
@@ -78,18 +84,29 @@ function Budgets() {
     }
   }
 
-  if (loading)
+  if (loading) {
     return (
-      <Box textAlign="center">
+      <Box textAlign='center'>
         <CircularProgress />
       </Box>
     );
-  if (error) return <Alert severity="error">{error}</Alert>;
+  }
+  if (error) {
+    return <Alert severity='error'>{error}</Alert>;
+  }
 
   return (
-    <Box maxWidth={600} mx="auto" my={4} p={3} borderRadius={2} boxShadow={2} bgcolor="#fff">
-      <Typography variant="h5" mb={2}>Budgets</Typography>
-      <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAddClick} sx={{ mb: 2 }}>
+    <Box maxWidth={600} mx='auto' my={4} p={3} borderRadius={2} boxShadow={2} bgcolor='#fff'>
+      <Typography variant='h5' mb={2}>
+        Budgets
+      </Typography>
+      <Button
+        variant='contained'
+        color='primary'
+        startIcon={<AddIcon />}
+        onClick={handleAddClick}
+        sx={{ mb: 2 }}
+      >
         Add Budget
       </Button>
       <List>
@@ -97,18 +114,26 @@ function Budgets() {
           <ListItem
             key={budget.id}
             secondaryAction={
-              <Stack direction="row" spacing={1}>
-                <IconButton edge="end" aria-label="edit" onClick={() => handleEditClick(budget)}>
+              <Stack direction='row' spacing={1}>
+                <IconButton edge='end' aria-label='edit' onClick={() => handleEditClick(budget)}>
                   <EditIcon />
                 </IconButton>
-                <IconButton edge="end" aria-label="delete" onClick={() => handleOpenDelete(budget.id)}>
+                <IconButton
+                  edge='end'
+                  aria-label='delete'
+                  onClick={() => handleOpenDelete(budget.id)}
+                >
                   <DeleteIcon />
                 </IconButton>
               </Stack>
             }
           >
             <ListItemText
-              primary={<strong>{budget.name} ({budget.category})</strong>}
+              primary={
+                <strong>
+                  {budget.name} ({budget.category})
+                </strong>
+              }
               secondary={`$${Number(budget.amount).toLocaleString()} / ${budget.period}`}
             />
           </ListItem>
@@ -126,11 +151,22 @@ function Budgets() {
           <DialogContentText>
             Are you sure you want to delete this budget? This action cannot be undone.
           </DialogContentText>
-          {deleteError && <Alert severity="error" sx={{ mt: 2 }}>{deleteError}</Alert>}
+          {deleteError && (
+            <Alert severity='error' sx={{ mt: 2 }}>
+              {deleteError}
+            </Alert>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDelete} disabled={deleteLoading}>Cancel</Button>
-          <Button color="error" variant="contained" onClick={handleConfirmDelete} disabled={deleteLoading}>
+          <Button onClick={handleCloseDelete} disabled={deleteLoading}>
+            Cancel
+          </Button>
+          <Button
+            color='error'
+            variant='contained'
+            onClick={handleConfirmDelete}
+            disabled={deleteLoading}
+          >
             Delete
           </Button>
         </DialogActions>

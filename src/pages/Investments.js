@@ -33,14 +33,20 @@ function Investments() {
   const [deleteError, setDeleteError] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const { data: investments, loading, error } = useFetch('/investments', {
+  const {
+    data: investments,
+    loading,
+    error,
+  } = useFetch('/investments', {
     initialData: [],
     dependencies: [refreshTrigger],
   });
   const setInvestments = useStore(state => state.setInvestments);
 
   useEffect(() => {
-    if (investments) setInvestments(investments);
+    if (investments) {
+      setInvestments(investments);
+    }
   }, [investments, setInvestments]);
 
   function handleAddClick() {
@@ -78,18 +84,29 @@ function Investments() {
     }
   }
 
-  if (loading)
+  if (loading) {
     return (
-      <Box textAlign="center">
+      <Box textAlign='center'>
         <CircularProgress />
       </Box>
     );
-  if (error) return <Alert severity="error">{error}</Alert>;
+  }
+  if (error) {
+    return <Alert severity='error'>{error}</Alert>;
+  }
 
   return (
-    <Box maxWidth={600} mx="auto" my={4} p={3} borderRadius={2} boxShadow={2} bgcolor="#fff">
-      <Typography variant="h5" mb={2}>Investments</Typography>
-      <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAddClick} sx={{ mb: 2 }}>
+    <Box maxWidth={600} mx='auto' my={4} p={3} borderRadius={2} boxShadow={2} bgcolor='#fff'>
+      <Typography variant='h5' mb={2}>
+        Investments
+      </Typography>
+      <Button
+        variant='contained'
+        color='primary'
+        startIcon={<AddIcon />}
+        onClick={handleAddClick}
+        sx={{ mb: 2 }}
+      >
         Add Investment
       </Button>
       <List>
@@ -97,11 +114,11 @@ function Investments() {
           <ListItem
             key={inv.id}
             secondaryAction={
-              <Stack direction="row" spacing={1}>
-                <IconButton edge="end" aria-label="edit" onClick={() => handleEditClick(inv)}>
+              <Stack direction='row' spacing={1}>
+                <IconButton edge='end' aria-label='edit' onClick={() => handleEditClick(inv)}>
                   <EditIcon />
                 </IconButton>
-                <IconButton edge="end" aria-label="delete" onClick={() => handleOpenDelete(inv.id)}>
+                <IconButton edge='end' aria-label='delete' onClick={() => handleOpenDelete(inv.id)}>
                   <DeleteIcon />
                 </IconButton>
               </Stack>
@@ -126,11 +143,22 @@ function Investments() {
           <DialogContentText>
             Are you sure you want to delete this investment? This action cannot be undone.
           </DialogContentText>
-          {deleteError && <Alert severity="error" sx={{ mt: 2 }}>{deleteError}</Alert>}
+          {deleteError && (
+            <Alert severity='error' sx={{ mt: 2 }}>
+              {deleteError}
+            </Alert>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDelete} disabled={deleteLoading}>Cancel</Button>
-          <Button color="error" variant="contained" onClick={handleConfirmDelete} disabled={deleteLoading}>
+          <Button onClick={handleCloseDelete} disabled={deleteLoading}>
+            Cancel
+          </Button>
+          <Button
+            color='error'
+            variant='contained'
+            onClick={handleConfirmDelete}
+            disabled={deleteLoading}
+          >
             Delete
           </Button>
         </DialogActions>

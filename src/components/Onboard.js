@@ -28,12 +28,12 @@ function Onboard() {
 
   if (step === 1) {
     return (
-      <Box maxWidth={350} mx="auto" my={5} p={3} borderRadius={2} boxShadow={2} bgcolor="#fff">
-        <Typography variant="h5" mb={2}>
+      <Box maxWidth={350} mx='auto' my={5} p={3} borderRadius={2} boxShadow={2} bgcolor='#fff'>
+        <Typography variant='h5' mb={2}>
           Welcome!
         </Typography>
         <Typography mb={2}>Your account is created. Please log in to continue.</Typography>
-        <Button variant="contained" color="primary" onClick={handleFinish}>
+        <Button variant='contained' color='primary' onClick={handleFinish}>
           Go to Login
         </Button>
       </Box>
@@ -41,46 +41,46 @@ function Onboard() {
   }
 
   return (
-    <Box maxWidth={350} mx="auto" my={5} p={3} borderRadius={2} boxShadow={2} bgcolor="#fff">
-      <Typography variant="h5" mb={2}>
+    <Box maxWidth={350} mx='auto' my={5} p={3} borderRadius={2} boxShadow={2} bgcolor='#fff'>
+      <Typography variant='h5' mb={2}>
         Onboard
       </Typography>
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity='error' sx={{ mb: 2 }}>
           {error}
         </Alert>
       )}
       <form onSubmit={handleSubmit}>
         <TextField
-          name="name"
-          label="Name"
+          name='name'
+          label='Name'
           fullWidth
           value={form.name}
           onChange={handleChange}
           required
-          margin="normal"
+          margin='normal'
         />
         <TextField
-          name="email"
-          label="Email"
-          type="email"
+          name='email'
+          label='Email'
+          type='email'
           fullWidth
           value={form.email}
           onChange={handleChange}
           required
-          margin="normal"
+          margin='normal'
         />
         <TextField
-          name="password"
-          label="Password"
-          type="password"
+          name='password'
+          label='Password'
+          type='password'
           fullWidth
           value={form.password}
           onChange={handleChange}
           required
-          margin="normal"
+          margin='normal'
         />
-        <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2 }}>
+        <Button type='submit' fullWidth variant='contained' color='primary' sx={{ mt: 2 }}>
           Register
         </Button>
       </form>

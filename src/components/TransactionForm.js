@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions,
-  TextField, Button, Alert, MenuItem
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  Alert,
+  MenuItem,
 } from '@mui/material';
 import api from '../utils/api';
 import { useStore } from '../store';
@@ -38,17 +44,27 @@ function TransactionForm({ open, transaction = null, onClose, onSuccess }) {
 
   function validate() {
     const errs = {};
-    if (!form.date.trim()) errs.date = 'Date required';
-    if (!form.accountId) errs.accountId = 'Account required';
-    if (!form.category.trim()) errs.category = 'Category required';
-    if (!form.amount.trim() || isNaN(parseFloat(form.amount))) errs.amount = 'Amount required';
+    if (!form.date.trim()) {
+      errs.date = 'Date required';
+    }
+    if (!form.accountId) {
+      errs.accountId = 'Account required';
+    }
+    if (!form.category.trim()) {
+      errs.category = 'Category required';
+    }
+    if (!form.amount.trim() || isNaN(parseFloat(form.amount))) {
+      errs.amount = 'Amount required';
+    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate()) {
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -71,18 +87,18 @@ function TransactionForm({ open, transaction = null, onClose, onSuccess }) {
   }
 
   return (
-    <Dialog open={open} onClose={loading ? undefined : onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={loading ? undefined : onClose} maxWidth='sm' fullWidth>
       <DialogTitle>{transaction ? 'Edit Transaction' : 'Add New Transaction'}</DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
           <TextField
-            name="date"
-            label="Date"
-            type="date"
+            name='date'
+            label='Date'
+            type='date'
             value={form.date}
             onChange={e => setForm({ ...form, date: e.target.value })}
             fullWidth
-            margin="normal"
+            margin='normal'
             error={!!errors.date}
             helperText={errors.date}
             disabled={loading}
@@ -90,13 +106,13 @@ function TransactionForm({ open, transaction = null, onClose, onSuccess }) {
             InputLabelProps={{ shrink: true }}
           />
           <TextField
-            name="accountId"
-            label="Account"
+            name='accountId'
+            label='Account'
             select
             value={form.accountId}
             onChange={e => setForm({ ...form, accountId: e.target.value })}
             fullWidth
-            margin="normal"
+            margin='normal'
             error={!!errors.accountId}
             helperText={errors.accountId}
             disabled={loading}
@@ -109,46 +125,52 @@ function TransactionForm({ open, transaction = null, onClose, onSuccess }) {
             ))}
           </TextField>
           <TextField
-            name="category"
-            label="Category"
+            name='category'
+            label='Category'
             value={form.category}
             onChange={e => setForm({ ...form, category: e.target.value })}
             fullWidth
-            margin="normal"
+            margin='normal'
             error={!!errors.category}
             helperText={errors.category}
             disabled={loading}
             required
           />
           <TextField
-            name="amount"
-            label="Amount"
+            name='amount'
+            label='Amount'
             value={form.amount}
             onChange={e => setForm({ ...form, amount: e.target.value })}
             fullWidth
-            margin="normal"
-            type="number"
+            margin='normal'
+            type='number'
             error={!!errors.amount}
             helperText={errors.amount}
             disabled={loading}
             required
           />
           <TextField
-            name="description"
-            label="Description"
+            name='description'
+            label='Description'
             value={form.description}
             onChange={e => setForm({ ...form, description: e.target.value })}
             fullWidth
-            margin="normal"
+            margin='normal'
             disabled={loading}
             multiline
             rows={2}
           />
-          {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+          {error && (
+            <Alert severity='error' sx={{ mt: 2 }}>
+              {error}
+            </Alert>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} disabled={loading}>Cancel</Button>
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
+          <Button onClick={onClose} disabled={loading}>
+            Cancel
+          </Button>
+          <Button type='submit' variant='contained' color='primary' disabled={loading}>
             {loading ? 'Saving…' : transaction ? 'Save' : 'Create'}
           </Button>
         </DialogActions>

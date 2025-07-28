@@ -7,7 +7,9 @@ export function useFetch(endpoint, options = {}) {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (options.skip) return;
+    if (options.skip) {
+      return;
+    }
     setLoading(true);
     api
       .get(endpoint)

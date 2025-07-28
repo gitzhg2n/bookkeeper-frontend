@@ -27,19 +27,19 @@ function BreakupWizard() {
 
   if (message) {
     return (
-      <Box maxWidth={350} mx="auto" my={5}>
-        <Alert severity="success">{message}</Alert>
+      <Box maxWidth={350} mx='auto' my={5}>
+        <Alert severity='success'>{message}</Alert>
       </Box>
     );
   }
 
   return (
-    <Box maxWidth={400} mx="auto" my={5} p={3} borderRadius={2} boxShadow={2} bgcolor="#fff">
-      <Typography variant="h5" mb={2}>
+    <Box maxWidth={400} mx='auto' my={5} p={3} borderRadius={2} boxShadow={2} bgcolor='#fff'>
+      <Typography variant='h5' mb={2}>
         Breakup Wizard
       </Typography>
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity='error' sx={{ mb: 2 }}>
           {error}
         </Alert>
       )}
@@ -47,15 +47,15 @@ function BreakupWizard() {
         {step === 0 && (
           <>
             <TextField
-              label="Reason for breakup"
-              name="reason"
+              label='Reason for breakup'
+              name='reason'
               value={form.reason}
               onChange={handleChange}
               required
               fullWidth
-              margin="normal"
+              margin='normal'
             />
-            <Button type="button" variant="outlined" onClick={handleNext}>
+            <Button type='button' variant='outlined' onClick={handleNext}>
               Next
             </Button>
           </>
@@ -63,15 +63,15 @@ function BreakupWizard() {
         {step === 1 && (
           <>
             <TextField
-              label="Account to transfer funds from"
-              name="account"
+              label='Account to transfer funds from'
+              name='account'
               value={form.account}
               onChange={handleChange}
               required
               fullWidth
-              margin="normal"
+              margin='normal'
             />
-            <Button type="button" variant="outlined" onClick={handleNext}>
+            <Button type='button' variant='outlined' onClick={handleNext}>
               Next
             </Button>
           </>
@@ -79,16 +79,16 @@ function BreakupWizard() {
         {step === 2 && (
           <>
             <TextField
-              label="Transfer Amount"
-              name="transferAmount"
-              type="number"
+              label='Transfer Amount'
+              name='transferAmount'
+              type='number'
               value={form.transferAmount}
               onChange={handleChange}
               required
               fullWidth
-              margin="normal"
+              margin='normal'
             />
-            <Button type="submit" variant="contained" color="error" sx={{ mt: 2 }}>
+            <Button type='submit' variant='contained' color='error' sx={{ mt: 2 }}>
               Finish
             </Button>
           </>
