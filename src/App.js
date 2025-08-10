@@ -1,56 +1,30 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { Container, Box } from '@mui/material';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { LoginPage } from './pages/LoginPage';
 import ErrorBoundary from './components/ErrorBoundary';
-import Navigation from './components/Navigation';
-import Dashboard from './pages/Dashboard';
-import Accounts from './pages/Accounts';
-import Budgets from './pages/Budgets';
-import Transactions from './pages/Transactions';
-import Investments from './pages/Investments';
-import Goals from './pages/Goals';
-import Settings from './pages/Settings';
-import Upgrade from './pages/Upgrade';
-import Login from './pages/Login';
-import BreakupWizard from './components/BreakupWizard';
-import HouseholdManager from './components/HouseholdManager';
-import IncomeSources from './pages/IncomeSources';
 
-function App() {
+function Dashboard() {
+  const { user, logout } = useAuth();
   return (
-    <ErrorBoundary>
-      <a href='#main-content' className='skip-nav'>
-        Skip to main content
-      </a>
-      <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Navigation />
-        <Container
-          maxWidth='lg'
-          sx={{ flexGrow: 1, mt: 4, mb: 4 }}
-          component='main'
-          role='main'
-          id='main-content'
-        >
-          <ErrorBoundary>
-            <Routes>
-              <Route path='/' element={<Dashboard />} />
-              <Route path='/accounts' element={<Accounts />} />
-              <Route path='/budgets' element={<Budgets />} />
-              <Route path='/transactions' element={<Transactions />} />
-              <Route path='/investments' element={<Investments />} />
-              <Route path='/goals' element={<Goals />} />
-              <Route path='/settings' element={<Settings />} />
-              <Route path='/upgrade' element={<Upgrade />} />
-              <Route path='/login' element={<Login />} />
-              <Route path='/breakup' element={<BreakupWizard />} />
-              <Route path='/household' element={<HouseholdManager />} />
-              <Route path='/income-sources' element={<IncomeSources />} />
-            </Routes>
-          </ErrorBoundary>
-        </Container>
-      </Box>
-    </ErrorBoundary>
+    <div style={{ padding: 24 }}>
+      <h1>Welcome, {user.email}</h1>
+      <p>Dashboard placeholder (accounts, budgets, etc. coming soon).</p>
+      <button onClick={logout}>Logout</button>
+    </div>
   );
 }
 
-export default App;
+function Root() {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Dashboard /> : <LoginPage />;
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <AuthProvider>
+        <Root />
+      </AuthProvider>
+    </ErrorBoundary>
+  );
+}
