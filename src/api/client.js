@@ -47,12 +47,12 @@ export class APIClient {
             body: JSON.stringify({ refresh_token: refreshToken }),
           });
           if (!resp.ok) return false;
-          const json = await resp.json();
-            this.setTokens({
-              accessToken: json.data.access_token,
-              refreshToken: json.data.refresh_token,
-              expiresAt: json.data.expires_at,
-            });
+            const json = await resp.json();
+          this.setTokens({
+            accessToken: json.data.access_token,
+            refreshToken: json.data.refresh_token,
+            expiresAt: json.data.expires_at,
+          });
           return true;
         } catch {
           return false;
@@ -82,39 +82,61 @@ export class APIClient {
     return this.request('/v1/users/me');
   }
 
-  // Vertical slice endpoints
+  // Households
   createHousehold(name) {
     return this.request('/v1/households', {
       method: 'POST',
       body: JSON.stringify({ name }),
     });
   }
+  listHouseholds() { return this.request('/v1/households'); }
 
-  listHouseholds() {
-    return this.request('/v1/households');
-  }
-
+  // Accounts
   createAccount(householdId, payload) {
     return this.request(`/v1/households/${householdId}/accounts`, {
       method: 'POST',
       body: JSON.stringify(payload),
     });
   }
-
   listAccounts(householdId) {
     return this.request(`/v1/households/${householdId}/accounts`);
   }
 
+  // Transactions
   createTransaction(accountId, payload) {
     return this.request(`/v1/accounts/${accountId}/transactions`, {
       method: 'POST',
       body: JSON.stringify(payload),
     });
   }
-
   listTransactions(accountId, params = {}) {
     const qs = new URLSearchParams(params).toString();
     return this.request(`/v1/accounts/${accountId}/transactions${qs ? `?${qs}` : ''}`);
+  }
+
+  // Categories
+  createCategory(householdId, name, parent_id = null) {
+    return this.request(`/v1/households/${householdId}/categories`, {
+      method: 'POST',
+      body: JSON.stringify({ name, parent_id }),
+    });
+  }
+  listCategories(householdId) {
+    return this.request(`/v1/households/${householdId}/categories`);
+  }
+
+  // Budgets
+  upsertBudget(householdId, month, category_id, planned_cents) {
+    return this.request(`/v1/households/${householdId}/budgets`, {
+      method: 'PUT',
+      body: JSON.stringify({ month, category_id, planned_cents }),
+    });
+  }
+  listBudgets(householdId, month) {
+    return this.request(`/v1/households/${householdId}/budgets?month=${encodeURIComponent(month)}`);
+  }
+  budgetSummary(householdId, month) {
+    return this.request(`/v1/households/${householdId}/budget_summary?month=${encodeURIComponent(month)}`);
   }
 }
 
