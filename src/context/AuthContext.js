@@ -30,10 +30,7 @@ export function AuthProvider({ children }) {
       refreshToken: resp.data.refresh_token,
       expiresAt: resp.data.expires_at,
     });
-    setUser({
-      id: resp.data.user_id,
-      email: resp.data.email,
-    });
+    setUser({ id: resp.data.user_id, email: resp.data.email });
     return resp;
   };
 
@@ -44,10 +41,7 @@ export function AuthProvider({ children }) {
       refreshToken: resp.data.refresh_token,
       expiresAt: resp.data.expires_at,
     });
-    setUser({
-      id: resp.data.user_id,
-      email: resp.data.email,
-    });
+    setUser({ id: resp.data.user_id, email: resp.data.email });
     return resp;
   };
 
@@ -66,8 +60,7 @@ export function AuthProvider({ children }) {
       try {
         const resp = await api.me();
         setUser(resp.data);
-      } catch (e) {
-        // token invalid
+      } catch {
         logout();
       } finally {
         setLoadingUser(false);
