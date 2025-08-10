@@ -86,6 +86,18 @@ export class APIClient {
     return this.request('/v1/users/me');
   }
 
+  logout(refreshToken) {
+    if (!refreshToken) {
+      return Promise.resolve();
+    }
+    return this.request('/v1/auth/logout', {
+      method: 'POST',
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    }).catch(() => {
+      // Best effort - don't fail logout if backend is down
+    });
+  }
+
   // Households
   createHousehold(name) {
     return this.request('/v1/households', {

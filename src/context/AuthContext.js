@@ -48,7 +48,14 @@ export function AuthProvider({ children }) {
     return resp;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    if (tokens?.refreshToken) {
+      try {
+        await api.logout(tokens.refreshToken);
+      } catch (e) {
+        // Best effort - don't fail logout if backend is down
+      }
+    }
     setTokens(null);
     setUser(null);
   };
