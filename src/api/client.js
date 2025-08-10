@@ -4,9 +4,10 @@ export class APIClient {
   constructor(getTokens, setTokens) {
     this.getTokens = getTokens;
     this.setTokens = setTokens;
+    this.refreshInFlight = null;
   }
 
-  async request(path, options = {}) {
+  async request(path, options = {}, retry = true) {
     const tokens = this.getTokens();
     const headers = {
       'Content-Type': 'application/json',
@@ -15,28 +16,52 @@ export class APIClient {
     if (tokens?.accessToken) {
       headers.Authorization = `Bearer ${tokens.accessToken}`;
     }
-
     const res = await fetch(`${API_BASE}${path}`, {
       ...options,
       headers,
     });
 
-    if (res.status === 401) {
-      // TODO: implement refresh flow when refresh endpoint exists
+    if (res.status === 401 && retry && tokens?.refreshToken) {
+      const refreshed = await this.tryRefresh(tokens.refreshToken);
+      if (refreshed) {
+        return this.request(path, options, false);
+      }
     }
 
-    let json;
-    try {
-      json = await res.json();
-    } catch {
-      json = null;
-    }
+    let json = null;
+    try { json = await res.json(); } catch { /* ignore */ }
 
     if (!res.ok) {
-      const msg = json?.message || `Request failed (${res.status})`;
-      throw new Error(msg);
+      throw new Error(json?.message || `Request failed (${res.status})`);
     }
     return json;
+  }
+
+  async tryRefresh(refreshToken) {
+    if (!this.refreshInFlight) {
+      this.refreshInFlight = (async () => {
+        try {
+          const resp = await fetch(`${API_BASE}/v1/auth/refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh_token: refreshToken }),
+          });
+          if (!resp.ok) return false;
+          const json = await resp.json();
+            this.setTokens({
+              accessToken: json.data.access_token,
+              refreshToken: json.data.refresh_token,
+              expiresAt: json.data.expires_at,
+            });
+          return true;
+        } catch {
+          return false;
+        } finally {
+          this.refreshInFlight = null;
+        }
+      })();
+    }
+    return this.refreshInFlight;
   }
 
   register(email, password) {
@@ -55,6 +80,41 @@ export class APIClient {
 
   me() {
     return this.request('/v1/users/me');
+  }
+
+  // Vertical slice endpoints
+  createHousehold(name) {
+    return this.request('/v1/households', {
+      method: 'POST',
+      body: JSON.stringify({ name }),
+    });
+  }
+
+  listHouseholds() {
+    return this.request('/v1/households');
+  }
+
+  createAccount(householdId, payload) {
+    return this.request(`/v1/households/${householdId}/accounts`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  }
+
+  listAccounts(householdId) {
+    return this.request(`/v1/households/${householdId}/accounts`);
+  }
+
+  createTransaction(accountId, payload) {
+    return this.request(`/v1/accounts/${accountId}/transactions`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  }
+
+  listTransactions(accountId, params = {}) {
+    const qs = new URLSearchParams(params).toString();
+    return this.request(`/v1/accounts/${accountId}/transactions${qs ? `?${qs}` : ''}`);
   }
 }
 
