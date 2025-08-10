@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './context/AuthContext';
 
 export function LoginPage() {
   const { login, register } = useAuth();
@@ -9,7 +9,7 @@ export function LoginPage() {
   const [err, setErr] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const submit = async (e) => {
+  const submit = async e => {
     e.preventDefault();
     setErr(null);
     setLoading(true);
@@ -36,7 +36,7 @@ export function LoginPage() {
         </div>
         <div style={{ marginTop: 12 }}>
           <label>Password</label>
-            <input value={password} onChange={e => setPassword(e.target.value)} required type="password" />
+          <input value={password} onChange={e => setPassword(e.target.value)} required type="password" />
         </div>
         {err && <div style={{ color: 'red', marginTop: 12 }}>{err}</div>}
         <button style={{ marginTop: 16 }} disabled={loading}>{loading ? '...' : (mode === 'login' ? 'Login' : 'Register')}</button>

@@ -29,7 +29,9 @@ export class APIClient {
     }
 
     let json = null;
-    try { json = await res.json(); } catch { /* ignore */ }
+    try {
+      json = await res.json();
+    } catch { /* ignore */ }
 
     if (!res.ok) {
       throw new Error(json?.message || `Request failed (${res.status})`);
@@ -46,8 +48,10 @@ export class APIClient {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ refresh_token: refreshToken }),
           });
-          if (!resp.ok) return false;
-            const json = await resp.json();
+          if (!resp.ok) {
+            return false;
+          }
+          const json = await resp.json();
           this.setTokens({
             accessToken: json.data.access_token,
             refreshToken: json.data.refresh_token,
@@ -89,7 +93,9 @@ export class APIClient {
       body: JSON.stringify({ name }),
     });
   }
-  listHouseholds() { return this.request('/v1/households'); }
+  listHouseholds() {
+    return this.request('/v1/households');
+  }
 
   // Accounts
   createAccount(householdId, payload) {
