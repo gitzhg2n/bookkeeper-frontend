@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { HouseholdProvider } from './context/HouseholdContext';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -39,9 +39,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <AuthProvider>
-        <Router>
-          <AppRoutes />
-        </Router>
+        <AppRoutes />
       </AuthProvider>
     </ErrorBoundary>
   );
