@@ -29,7 +29,9 @@ export class APIClient {
     }
 
     let json = null;
-    try { json = await res.json(); } catch { /* ignore */ }
+    try {
+      json = await res.json();
+    } catch { /* ignore */ }
 
     if (!res.ok) {
       throw new Error(json?.message || `Request failed (${res.status})`);
@@ -46,8 +48,10 @@ export class APIClient {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ refresh_token: refreshToken }),
           });
-          if (!resp.ok) return false;
-            const json = await resp.json();
+          if (!resp.ok) {
+            return false;
+          }
+          const json = await resp.json();
           this.setTokens({
             accessToken: json.data.access_token,
             refreshToken: json.data.refresh_token,
@@ -82,6 +86,18 @@ export class APIClient {
     return this.request('/v1/users/me');
   }
 
+  logout(refreshToken) {
+    if (!refreshToken) {
+      return Promise.resolve();
+    }
+    return this.request('/v1/auth/logout', {
+      method: 'POST',
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    }).catch(() => {
+      // Best effort - don't fail logout if backend is down
+    });
+  }
+
   // Households
   createHousehold(name) {
     return this.request('/v1/households', {
@@ -89,7 +105,9 @@ export class APIClient {
       body: JSON.stringify({ name }),
     });
   }
-  listHouseholds() { return this.request('/v1/households'); }
+  listHouseholds() {
+    return this.request('/v1/households');
+  }
 
   // Accounts
   createAccount(householdId, payload) {

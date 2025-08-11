@@ -15,10 +15,13 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(false);
 
-  const setTokens = useCallback((t) => {
+  const setTokens = useCallback(t => {
     setTokensState(t);
-    if (t) localStorage.setItem('auth_tokens', JSON.stringify(t));
-    else localStorage.removeItem('auth_tokens');
+    if (t) {
+      localStorage.setItem('auth_tokens', JSON.stringify(t));
+    } else {
+      localStorage.removeItem('auth_tokens');
+    }
   }, []);
 
   const api = createAPIClient(() => tokens, setTokens);
@@ -45,7 +48,14 @@ export function AuthProvider({ children }) {
     return resp;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    if (tokens?.refreshToken) {
+      try {
+        await api.logout(tokens.refreshToken);
+      } catch (e) {
+        // Best effort - don't fail logout if backend is down
+      }
+    }
     setTokens(null);
     setUser(null);
   };
@@ -79,6 +89,8 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+  if (!ctx) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
   return ctx;
 }
