@@ -1,16 +1,5 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useHouseholds } from '../context/HouseholdContext';
 
-const navItems = [
-  { to: '/', label: 'Dashboard' },
-  { to: '/households', label: 'Households' },
-  { to: '/categories', label: 'Categories' },
-  { to: '/accounts', label: 'Accounts' },
-  { to: '/budgets', label: 'Budgets' },
-  { to: '/transactions', label: 'Transactions' },
-];
+import navItems from '../config/navItems'; // new config file for navigation items
 
 export function Layout({ children }) {
   const { user, logout, tokens, api } = useAuth();
@@ -20,6 +9,8 @@ export function Layout({ children }) {
   const handleLogout = async () => {
     await api.logout(tokens?.refreshToken);
     logout();
+    // Optionally clear other sensitive state here
+    window.localStorage.clear();
   };
 
   return (
@@ -58,6 +49,33 @@ export function Layout({ children }) {
             ))}
           </select>
         </div>
+        {/* Responsive sidebar toggle for mobile (optional, add CSS/JS as needed) */}
+      </aside>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <header
+          style={{
+            height: 56,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0 16px',
+            borderBottom: '1px solid #e5e7eb',
+            background: '#fff',
+          }}
+        >
+          <div style={{ fontWeight: 500 }}>{loc.pathname === '/' ? 'Dashboard' : loc.pathname.slice(1)}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ fontSize: 14 }}>{user?.email}</span>
+            <button onClick={handleLogout} style={{ padding: '6px 12px' }}>
+              Logout
+            </button>
+          </div>
+        </header>
+        <main style={{ flex: 1, padding: 24, background: '#f9fafb' }}>{children}</main>
+      </div>
+    </div>
+  );
+}
       </aside>
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <header

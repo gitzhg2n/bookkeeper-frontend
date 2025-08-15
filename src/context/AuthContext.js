@@ -3,6 +3,13 @@ import { createAPIClient } from '../api/client';
 
 const AuthContext = createContext();
 
+// Helper to check if token is expired
+function isTokenExpired(tokens) {
+  if (!tokens?.expiresAt) return true;
+  // expiresAt is assumed to be a timestamp in seconds
+  return Date.now() / 1000 > tokens.expiresAt;
+}
+
 export function AuthProvider({ children }) {
   const [tokens, setTokensState] = useState(() => {
     try {
@@ -64,6 +71,10 @@ export function AuthProvider({ children }) {
     const load = async () => {
       if (!tokens) {
         setUser(null);
+        return;
+      }
+      if (isTokenExpired(tokens)) {
+        await logout();
         return;
       }
       setLoadingUser(true);

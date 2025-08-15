@@ -6,7 +6,14 @@ const HouseholdContext = createContext();
 export function HouseholdProvider({ children }) {
   const { api, isAuthenticated } = useAuth();
   const [households, setHouseholds] = useState([]);
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState(() => {
+    try {
+      const raw = localStorage.getItem('selected_household');
+      return raw ? Number(raw) : null;
+    } catch {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -32,12 +39,22 @@ export function HouseholdProvider({ children }) {
     }
   }, [api, isAuthenticated, selectedId]);
 
+  // Persist selected household in localStorage
+  useEffect(() => {
+    if (selectedId) {
+      localStorage.setItem('selected_household', selectedId);
+    } else {
+      localStorage.removeItem('selected_household');
+    }
+  }, [selectedId]);
+
   useEffect(() => {
     refresh();
   }, [refresh]);
 
   return (
     <HouseholdContext.Provider value={{ households, selectedId, setSelectedId, refresh, loading, error }}>
+      {error && <div style={{ color: 'red', padding: 8 }}>Household error: {error}</div>}
       {children}
     </HouseholdContext.Provider>
   );

@@ -6,8 +6,8 @@ export default function AccountsPage() {
   const { api } = useAuth();
   const { selectedId } = useHouseholds();
   const [accounts, setAccounts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({ name: '', type: 'checking', currency: 'USD', opening_balance_cents: 0 });
 
   const load = useCallback(async () => {
@@ -16,12 +16,12 @@ export default function AccountsPage() {
       return;
     }
     setLoading(true);
-    setErr(null);
+    setError("");
     try {
       const resp = await api.listAccounts(selectedId);
       setAccounts(resp.data || []);
     } catch (e) {
-      setErr(e.message);
+      setError("Failed to load accounts");
     } finally {
       setLoading(false);
     }
@@ -33,15 +33,28 @@ export default function AccountsPage() {
 
   const submit = async e => {
     e.preventDefault();
-    if (!selectedId) {
-      return;
-    }
+    setError("");
     try {
-      await api.createAccount(selectedId, form);
+      if (editing) {
+        await api.updateAccount(editing, form);
+      } else {
+        await api.createAccount(selectedId, form);
+      }
+      setEditing(null);
       setForm({ ...form, name: '', opening_balance_cents: 0 });
       await load();
     } catch (e2) {
-      setErr(e2.message);
+      setError("Failed to save account");
+    }
+  };
+
+  const handleDelete = async id => {
+    setError("");
+    try {
+      await api.deleteAccount(id);
+      load();
+    } catch (e) {
+      setError("Failed to delete account");
     }
   };
 
@@ -53,7 +66,7 @@ export default function AccountsPage() {
     <div>
       <h3>Accounts</h3>
       {loading && <div>Loading...</div>}
-      {err && <div style={{ color: 'red' }}>{err}</div>}
+      {error && <div style={{ color: 'red' }}>{error}</div>}
       <table style={{ borderCollapse: 'collapse', width: '100%', marginTop: 8 }}>
         <thead>
           <tr>

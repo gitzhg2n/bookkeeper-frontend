@@ -17,6 +17,7 @@ class ErrorBoundary extends React.Component {
     // Log the error to an error reporting service
     // eslint-disable-next-line no-console
     console.error('Error caught by ErrorBoundary:', error, errorInfo);
+    // TODO: Integrate with error reporting service (e.g., Sentry)
 
     this.setState({
       error: error,

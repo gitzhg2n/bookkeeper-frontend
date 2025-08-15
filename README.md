@@ -149,16 +149,58 @@ npx serve -s build
 - **Code Quality Tools** with ESLint and Prettier for maintainable code
 - **Comprehensive Build Setup** with error handling and warnings as errors in CI
 
+
+### Notification & Alert Features
+- **Notification Center**: View, mark as read, and manage all notifications
+- **Investment Alerts**: Create, edit, and delete custom investment alerts (price, percent, value, custom rules)
+- **Notification Preferences**: User-configurable in-app, email, and push notification settings
+
+### Responsive Design
+- Fully responsive layout for mobile, tablet, and desktop
+- Touch-friendly navigation and controls
+- Adaptive font sizes and spacing for readability
+
+### Error & Loading States
+- All main pages include loading indicators and error messages for robust UX
+
+### Security & Privacy
+- No analytics or tracking by default
+- All sensitive data handled via secure backend API
+
 ### Planned Features (Future Releases)
 - Interactive charts and data visualization
 - Investment portfolio tracking
-- Financial goals setting and progress tracking
 - Advanced reporting and analytics
-- Mobile responsiveness improvements
-- Enhanced error and loading states
 - Data encryption indicators
 
-## 🌐 Backend Integration
+
+## 🚀 Deployment
+
+### Production Build & Deploy
+1. Build the app:
+   ```sh
+   npm run build
+   ```
+2. Serve the static files with any web server (e.g. Nginx, Caddy, or `npx serve`):
+   ```sh
+   npx serve -s build
+   ```
+3. Configure your backend API URL in `.env` as needed.
+
+### Docker (Optional)
+You can use a simple Dockerfile to build and serve the frontend:
+```Dockerfile
+FROM node:20-alpine as build
+WORKDIR /app
+COPY . .
+RUN npm install && npm run build
+
+FROM nginx:alpine
+COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 80
+```
+
+---
 
 The frontend integrates with a RESTful API backend. Key integration points:
 
@@ -167,15 +209,12 @@ The frontend integrates with a RESTful API backend. Key integration points:
 - **Request Interceptors**: Automatic authorization header injection
 - **Response Interceptors**: Global error handling and redirect logic
 
+
 Backend API endpoints are configured through the `REACT_APP_API_BASE` environment variable.
 
+
 ### Required Backend Endpoints
-- `POST /v1/auth/register` - User registration
-- `POST /v1/auth/login` - User login
-- `POST /v1/auth/logout` - User logout
-- `POST /v1/auth/refresh` - Token refresh
-- `GET /v1/users/me` - Get current user
-- Household, Account, Category, Budget, and Transaction CRUD endpoints
+- See backend README for full API details. All endpoints are versioned under `/api/`.
 
 ## 📋 License
 

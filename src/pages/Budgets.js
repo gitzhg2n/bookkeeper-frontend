@@ -14,7 +14,8 @@ export default function BudgetsPage() {
   const [budgets, setBudgets] = useState([]);
   const [categories, setCategories] = useState([]);
   const [err, setErr] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [newBudget, setNewBudget] = useState({ category_id: '', planned_cents: 0 });
 
   const load = useCallback(async () => {
@@ -47,12 +48,13 @@ export default function BudgetsPage() {
     if (!selectedId || !newBudget.category_id) {
       return;
     }
+    setError("");
     try {
       await api.upsertBudget(selectedId, month, Number(newBudget.category_id), Number(newBudget.planned_cents));
       setNewBudget({ category_id: '', planned_cents: 0 });
       await load();
     } catch (e2) {
-      setErr(e2.message);
+      setError("Failed to save budget");
     }
   };
 
@@ -77,6 +79,7 @@ export default function BudgetsPage() {
       </div>
       {loading && <div>Loading...</div>}
       {err && <div style={{ color: 'red' }}>{err}</div>}
+      {error && <div style={{ color: "red" }}>{error}</div>}
       <table style={{ borderCollapse: 'collapse', width: '100%', marginTop: 8 }}>
         <thead>
           <tr>
