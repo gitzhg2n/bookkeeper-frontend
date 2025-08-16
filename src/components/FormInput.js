@@ -1,18 +1,22 @@
 import React from 'react';
 
-export default function FormInput({ label, name, value, onChange, type = 'text', placeholder = '', disabled = false }) {
+export default function FormInput({ label, name, value, onChange, type = 'text', placeholder = '', disabled = false, required = false, step }) {
   return (
-    <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: '1.1rem' }}>
-      {label}
+    <div className="mb-3">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {label}{required ? ' *' : ''}
+      </label>
       <input
+        aria-label={label}
         name={name}
         value={value}
         onChange={onChange}
         type={type}
         placeholder={placeholder}
-        style={{ fontSize: '1.1rem', padding: '0.75rem' }}
+        step={step}
+        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
         disabled={disabled}
       />
-    </label>
+    </div>
   );
 }

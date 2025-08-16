@@ -2,6 +2,8 @@
 
 This repository contains the frontend code for **Bookkeeper**, a privacy-first personal finance management application built with modern React architecture and best practices.
 
+[![Frontend Tests](https://github.com/gitzhg2n/bookkeeper-frontend-1/actions/workflows/frontend-tests.yml/badge.svg)](https://github.com/gitzhg2n/bookkeeper-frontend-1/actions/workflows/frontend-tests.yml)
+
 ## 🏛️ Architecture Overview
 
 ### Frontend Architecture

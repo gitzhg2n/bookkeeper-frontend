@@ -1,0 +1,201 @@
+name: Cypress E2E
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Install Docker Compose (v2)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose-plugin
+
+      - name: Checkout backend repository
+        uses: actions/checkout@v4
+        with:
+          repository: gitzhg2n/bookkeeper-backend
+          path: ../bookkeeper-backend
+
+      - name: Bring up backend via Docker Compose
+        working-directory: ./
+        run: |
+          # start backend from the sibling backend folder
+          cd ../bookkeeper-backend || exit 1
+          docker compose up -d --build
+
+      - name: Wait for Postgres to accept connections
+        working-directory: ../bookkeeper-backend
+        run: |
+          echo "Waiting for Postgres on port 5432"
+          for i in {1..30}; do
+            if docker exec bookkeeper-backend_db_1 pg_isready -U bookkeeper >/dev/null 2>&1; then
+              echo "Postgres ready"
+              exit 0
+            fi
+            echo "Waiting for Postgres... ($i)"
+            sleep 2
+          done
+          echo "Postgres did not become ready in time" && exit 1
+
+      - name: Seed database with test data
+        working-directory: ../bookkeeper-backend
+        run: |
+          chmod +x ./scripts/seed_db.sh || true
+          # Try default compose container name, otherwise discover it
+          CONTAINER=bookkeeper-backend_db_1
+          if ! docker ps --format '{{.Names}}' | grep -q "${CONTAINER}"; then
+            echo "Default container name not found, discovering Postgres container..."
+            CONTAINER=$(docker ps --filter ancestor=postgres:16-alpine --format '{{.Names}}' | head -n1)
+            echo "Discovered container: $CONTAINER"
+          fi
+          if [ -n "$CONTAINER" ]; then
+            ./scripts/seed_db.sh "$CONTAINER" || true
+          else
+            echo "No Postgres container found to seed. Skipping.";
+          fi
+
+      - name: Run DB migrations (if present)
+        working-directory: ../bookkeeper-backend
+        run: |
+          if [ -d "internal/db/migrations" ]; then
+            echo "Migrations folder found, discovering Postgres container..."
+            CONTAINER=bookkeeper-backend_db_1
+            if ! docker ps --format '{{.Names}}' | grep -q "${CONTAINER}"; then
+              CONTAINER=$(docker ps --filter ancestor=postgres:16-alpine --format '{{.Names}}' | head -n1)
+            fi
+            if [ -z "${CONTAINER}" ]; then
+              echo "No Postgres container found; skipping migrations.";
+            else
+              echo "Applying SQL migrations to container: ${CONTAINER}"
+              for f in internal/db/migrations/*.sql; do
+                echo "Applying $f"
+                cat "$f" | docker exec -i "${CONTAINER}" psql -U bookkeeper -d bookkeeper || true
+              done
+            fi
+          else
+            echo "No migrations folder found, skipping."
+          fi
+
+      - name: Install sqlite3
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sqlite3
+        working-directory: ../bookkeeper-backend
+
+      - name: Run migrations script (applies SQL files if sqlite3 present)
+        working-directory: ../bookkeeper-backend
+        run: |
+          chmod +x ./scripts/run_migrations.sh || true
+          ./scripts/run_migrations.sh
+
+      - name: Wait for backend health
+        working-directory: ../bookkeeper-backend
+        run: |
+          echo "Waiting for backend health at http://localhost:3000/v1/health"
+          for i in {1..30}; do
+            if curl -sSf http://localhost:3000/v1/health >/dev/null; then
+              echo "Backend healthy"
+              exit 0
+            fi
+            echo "Waiting... ($i)"
+            sleep 2
+          done
+          echo "Backend did not become healthy in time" && exit 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: ./
+
+      - name: Start frontend
+        run: npm start &
+        working-directory: ./
+
+      - name: Wait for frontend to be ready
+        run: npx wait-on http://localhost:3000 --timeout 60000
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v5
+        with:
+          start: npm start
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 60
+
+      - name: Collect backend & docker logs on failure
+        if: failure()
+        working-directory: ../bookkeeper-backend
+        run: |
+          set -eux
+          mkdir -p e2e-logs
+          # Discover app container (try common compose names or search by image name)
+          APP_CONTAINER=$(docker ps --format '{{.Names}}' | grep -E 'bookkeeper-backend_app_1|bookkeeper-backend_app' || true)
+          if [ -z "$APP_CONTAINER" ]; then
+            APP_CONTAINER=$(docker ps --format '{{.Names}} {{.Image}}' | awk '/bookkeeper-backend|bookkeeper/ {print $1; exit}' || true)
+          fi
+          # Discover Postgres container (by image)
+          DB_CONTAINER=$(docker ps --filter ancestor=postgres:16-alpine --format '{{.Names}}' | head -n1 || true)
+          if [ -z "$DB_CONTAINER" ]; then
+            DB_CONTAINER=$(docker ps --format '{{.Names}} {{.Image}}' | awk '/postgres/ {print $1; exit}' || true)
+          fi
+          echo "App container: $APP_CONTAINER" > e2e-logs/containers.txt
+          echo "DB container: $DB_CONTAINER" >> e2e-logs/containers.txt
+
+          if [ -n "$APP_CONTAINER" ]; then
+            echo "Collecting logs for app container: $APP_CONTAINER"
+            docker logs "$APP_CONTAINER" >& e2e-logs/app.log || true
+            # Inspect files in /app inside container for potential log files
+            docker exec "$APP_CONTAINER" sh -c 'ls -la /app || true' > e2e-logs/app_files.txt || true
+            docker exec "$APP_CONTAINER" sh -c 'if [ -f /app/bookkeeper-backend.log ]; then cat /app/bookkeeper-backend.log; fi' > e2e-logs/app_runtime.log || true
+          fi
+
+          if [ -n "$DB_CONTAINER" ]; then
+            echo "Collecting logs for db container: $DB_CONTAINER"
+            docker logs "$DB_CONTAINER" >& e2e-logs/db.log || true
+          fi
+
+          echo "Collecting docker-compose logs"
+          docker compose logs >& e2e-logs/compose.log || true
+
+          echo "Fetching backend health endpoint"
+          curl -sS http://localhost:3000/v1/health -o e2e-logs/health.txt || true
+
+      - name: Upload E2E logs artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-logs
+          path: ../bookkeeper-backend/e2e-logs
+
+      - name: Upload brief logs on success
+        if: success()
+        working-directory: ../bookkeeper-backend
+        run: |
+          mkdir -p e2e-logs
+          docker ps --format '{{.Names}} {{.Image}}' > e2e-logs/containers-summary.txt || true
+          curl -sS http://localhost:3000/v1/health -o e2e-logs/health.txt || true
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-logs-brief
+          path: ../bookkeeper-backend/e2e-logs
+
+      - name: Tear down backend
+        if: always()
+        run: |
+          cd ../bookkeeper-backend || exit 1
+          docker compose down -v
+

@@ -6,6 +6,7 @@ const navItems = [
   { to: '/accounts', label: 'Accounts' },
   { to: '/budgets', label: 'Budgets' },
   { to: '/transactions', label: 'Transactions' },
+  { to: '/calculators', label: 'Calculators' },
 ];
 
 export default navItems;

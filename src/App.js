@@ -23,6 +23,7 @@ import Goals from './pages/Goals';
 import Accounts from './pages/Accounts';
 import Categories from './pages/Categories';
 import NavBar from './components/NavBar';
+import Calculators from './pages/Calculators';
 
 function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -49,6 +50,7 @@ function AppRoutes() {
           <Route path="/reset" element={<PasswordResetPage />} />
           <Route path="/onboarding" element={<OnboardingPage />} />
           <Route path="/goals" element={<Goals />} />
+          <Route path="/calculators" element={<Calculators />} />
         </Routes>
       </Layout>
     </HouseholdProvider>
